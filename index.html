@@ -7,299 +7,408 @@
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0a0a12">
+  <meta name="theme-color" content="#08080f">
 
   <!-- iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="UUID Gen">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-
-  <!-- SEO / social -->
-  <meta name="description" content="Generate secure UUID v4 identifiers instantly. Bulk generation, copy and download — free, no ads, works offline.">
+  <meta name="description" content="Generate secure UUID v4 identifiers instantly. Works offline.">
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg0:      #07070f;
-      --bg1:      #0d0d1a;
-      --glass:    rgba(255,255,255,0.055);
-      --glass2:   rgba(255,255,255,0.09);
-      --border:   rgba(255,255,255,0.10);
-      --border2:  rgba(255,255,255,0.16);
-      --accent:   #818cf8;
-      --accent2:  #6366f1;
-      --accent3:  #4f46e5;
-      --green:    #34d399;
-      --red:      #f87171;
-      --t1:       #f1f5f9;
-      --t2:       #94a3b8;
-      --t3:       #475569;
-      --radius:   18px;
-      --radius-sm:12px;
-      --font:     -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
-      --mono:     "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
-      --blur:     blur(24px) saturate(160%);
-      --shadow:   0 8px 32px rgba(0,0,0,0.45);
-      --shadow-sm:0 2px 12px rgba(0,0,0,0.3);
-      --glow:     0 0 40px rgba(129,140,248,0.12);
+      --font:  -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+      --mono:  "SF Mono", "Fira Code", ui-monospace, monospace;
+      --t1:    rgba(255,255,255,0.95);
+      --t2:    rgba(255,255,255,0.55);
+      --t3:    rgba(255,255,255,0.28);
+
+      /* glass material */
+      --glass-bg:     rgba(255,255,255,0.07);
+      --glass-border: rgba(255,255,255,0.14);
+      --glass-shine:  rgba(255,255,255,0.10);
+      --glass-blur:   blur(48px) saturate(200%);
+
+      /* darker glass for panels */
+      --panel-bg:     rgba(0,0,0,0.42);
+      --panel-border: rgba(255,255,255,0.10);
+
+      /* accent */
+      --indigo: #818cf8;
+      --purple: #a78bfa;
+      --green:  #34d399;
+      --red:    #f87171;
+
+      --radius: 22px;
+      --rsm:    14px;
+      --rbtn:   50px;
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; height: 100%; }
 
     body {
       font-family: var(--font);
-      background: var(--bg0);
+      background: #08080f;
       color: var(--t1);
-      min-height: 100vh;
+      min-height: 100%;
       overflow-x: hidden;
     }
 
-    /* ── background glow orbs ── */
-    body::before, body::after {
-      content: '';
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
-      filter: blur(80px);
+    /* ─── BACKGROUND ─────────────────────────────────── */
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      overflow: hidden;
     }
-    body::before {
-      width: 600px; height: 600px;
+    .bg-blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(100px);
+      will-change: transform;
+    }
+    .blob1 {
+      width: 700px; height: 700px;
       top: -200px; left: -150px;
-      background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(99,102,241,0.38) 0%, transparent 65%);
+      animation: drift1 18s ease-in-out infinite alternate;
     }
-    body::after {
-      width: 500px; height: 500px;
-      bottom: -100px; right: -100px;
-      background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%);
+    .blob2 {
+      width: 600px; height: 600px;
+      bottom: -150px; right: -100px;
+      background: radial-gradient(circle, rgba(139,92,246,0.32) 0%, transparent 65%);
+      animation: drift2 22s ease-in-out infinite alternate;
     }
+    .blob3 {
+      width: 400px; height: 400px;
+      top: 40%; left: 55%;
+      background: radial-gradient(circle, rgba(236,72,153,0.18) 0%, transparent 65%);
+      animation: drift3 26s ease-in-out infinite alternate;
+    }
+    @keyframes drift1 { to { transform: translate(60px, 80px); } }
+    @keyframes drift2 { to { transform: translate(-60px, -60px); } }
+    @keyframes drift3 { to { transform: translate(-80px, 60px); } }
 
-    /* ── HEADER ── */
-    .hdr {
-      background: rgba(7,7,15,0.75);
-      backdrop-filter: var(--blur);
-      -webkit-backdrop-filter: var(--blur);
-      border-bottom: 1px solid var(--border);
-      padding: 0 24px;
-      padding-top: max(0px, env(safe-area-inset-top));
-      padding-left: max(24px, env(safe-area-inset-left));
-      padding-right: max(24px, env(safe-area-inset-right));
-      position: sticky; top: 0; z-index: 200;
-      height: calc(56px + env(safe-area-inset-top, 0px));
-      display: flex; align-items: flex-end;
-    }
-    .hdr-inner {
-      display: flex; align-items: center; gap: 12px;
-      width: 100%; max-width: 820px; margin: 0 auto;
-      padding-bottom: 12px;
-    }
-    .hdr-logo {
-      width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
-      background: linear-gradient(135deg, var(--accent2), #a855f7);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 15px; box-shadow: 0 2px 12px rgba(99,102,241,0.4);
-    }
-    .hdr-title { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
-    .hdr-badge {
-      margin-left: auto;
-      font-size: 11px; font-weight: 600; color: var(--accent);
-      background: rgba(129,140,248,0.12); border: 1px solid rgba(129,140,248,0.25);
-      padding: 3px 9px; border-radius: 20px; letter-spacing: 0.3px;
-    }
-
-    /* ── LAYOUT ── */
-    .wrap {
+    /* ─── LAYOUT ─────────────────────────────────────── */
+    .root {
       position: relative; z-index: 1;
-      max-width: 820px; margin: 0 auto;
-      padding: 40px 20px 60px;
-      padding-left:  max(20px, env(safe-area-inset-left));
-      padding-right: max(20px, env(safe-area-inset-right));
-      padding-bottom: max(60px, calc(env(safe-area-inset-bottom) + 40px));
+      display: flex;
+      min-height: 100dvh;
     }
 
-    /* ── CARD / GLASS ── */
-    .card {
-      background: var(--glass);
-      backdrop-filter: var(--blur);
-      -webkit-backdrop-filter: var(--blur);
-      border: 1px solid var(--border);
+    /* ─── SIDEBAR ────────────────────────────────────── */
+    .sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      background: var(--panel-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-right: 1px solid var(--panel-border);
+      padding: max(env(safe-area-inset-top, 0px), 24px) 0 24px;
+      display: flex;
+      flex-direction: column;
+      position: sticky; top: 0;
+      height: 100dvh;
+    }
+
+    .sidebar-logo {
+      display: flex; align-items: center; gap: 12px;
+      padding: 0 22px 32px;
+    }
+    .sidebar-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.45);
+    }
+    .sidebar-name {
+      font-size: 15px; font-weight: 700; letter-spacing: -0.2px;
+    }
+
+    .nav-list { list-style: none; flex: 1; }
+    .nav-item {
+      display: flex; align-items: center; gap: 13px;
+      padding: 12px 22px;
+      font-size: 15px; font-weight: 500;
+      color: var(--t2);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nav-item:hover { color: var(--t1); }
+    .nav-item.active {
+      color: var(--t1);
+      background: rgba(255,255,255,0.07);
+    }
+    .nav-item.active::before {
+      content: '';
+      position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 3px; height: 22px; border-radius: 0 3px 3px 0;
+      background: var(--indigo);
+    }
+    .nav-icon {
+      font-size: 17px; width: 22px; text-align: center; flex-shrink: 0;
+    }
+
+    .sidebar-footer {
+      padding: 16px 22px 0;
+      border-top: 1px solid var(--panel-border);
+    }
+    .v4-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 600; color: var(--indigo);
+      background: rgba(129,140,248,0.12);
+      border: 1px solid rgba(129,140,248,0.22);
+      padding: 5px 12px; border-radius: 20px;
+    }
+    .v4-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+
+    /* ─── MAIN ───────────────────────────────────────── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* ─── TOOLBAR ────────────────────────────────────── */
+    .toolbar {
+      display: flex; align-items: center; justify-content: flex-end;
+      gap: 8px;
+      padding: max(env(safe-area-inset-top, 0px), 16px) 28px 16px;
+      padding-left: 28px;
+      background: rgba(8,8,15,0.6);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .tb-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.10);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 0.5px solid rgba(255,255,255,0.18);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset,
+                  0 4px 12px rgba(0,0,0,0.3);
+      color: var(--t1);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tb-btn:hover {
+      background: rgba(255,255,255,0.16);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.16) inset,
+                  0 6px 16px rgba(0,0,0,0.35);
+    }
+    .tb-btn:active {
+      transform: scale(0.92);
+    }
+    .tb-btn svg { width: 15px; height: 15px; }
+    .tb-btn.primary {
+      background: rgba(129,140,248,0.25);
+      border-color: rgba(129,140,248,0.4);
+    }
+    .tb-btn.primary:hover { background: rgba(129,140,248,0.35); }
+    .tb-btn.active-green {
+      background: rgba(52,211,153,0.2);
+      border-color: rgba(52,211,153,0.35);
+      color: var(--green);
+    }
+
+    /* ─── SECTIONS ───────────────────────────────────── */
+    .section { display: none; flex-direction: column; flex: 1; }
+    .section.active { display: flex; }
+
+    /* ─── CONTENT PADDING ────────────────────────────── */
+    .content {
+      flex: 1;
+      padding: 32px 28px;
+      padding-bottom: max(48px, env(safe-area-inset-bottom, 0px));
+      display: flex; flex-direction: column; gap: 16px;
+      max-width: 720px;
+    }
+
+    /* ─── GLASS CARD ─────────────────────────────────── */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius);
-      box-shadow: var(--shadow), var(--glow);
+      box-shadow:
+        0 1px 0 var(--glass-shine) inset,
+        0 24px 64px rgba(0,0,0,0.5),
+        0 0 0 0.5px rgba(255,255,255,0.04) inset;
       padding: 28px;
       position: relative;
       overflow: hidden;
     }
-    .card::before {
+    .glass::after {
       content: '';
       position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%);
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18) 30%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0.18) 70%, transparent);
       pointer-events: none;
     }
 
-    .card + .card { margin-top: 16px; }
+    .glass-sm { border-radius: var(--rsm); padding: 16px 18px; }
 
     .section-label {
-      font-size: 11px; font-weight: 700; color: var(--t3);
-      text-transform: uppercase; letter-spacing: 1px;
-      margin-bottom: 20px;
+      font-size: 11px; font-weight: 700;
+      color: var(--t3); text-transform: uppercase; letter-spacing: 1.2px;
+      margin-bottom: 18px;
     }
 
-    /* ── HERO ── */
-    .hero { text-align: center; }
+    /* ─── HERO ───────────────────────────────────────── */
     .hero-eyebrow {
-      font-size: 12px; font-weight: 600;
-      color: var(--accent); letter-spacing: 2px;
-      text-transform: uppercase; margin-bottom: 8px;
+      font-size: 11px; font-weight: 700;
+      color: var(--indigo); letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 10px;
     }
     .hero-title {
-      font-size: clamp(22px, 4vw, 32px);
-      font-weight: 800; letter-spacing: -0.5px;
-      line-height: 1.15; margin-bottom: 6px;
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 800; letter-spacing: -1px; line-height: 1.1;
+      background: linear-gradient(160deg, #fff 0%, rgba(255,255,255,0.75) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 6px;
     }
-    .hero-sub {
-      font-size: 14px; color: var(--t2); line-height: 1.6;
-    }
+    .hero-sub { font-size: 14px; color: var(--t2); line-height: 1.6; }
 
-    /* ── UUID DISPLAY ── */
+    /* ─── UUID DISPLAY ───────────────────────────────── */
     .uuid-box {
-      margin: 28px 0 20px;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid var(--border2);
-      border-radius: var(--radius-sm);
-      padding: 20px 22px;
-      display: flex; align-items: center; gap: 12px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+      margin: 24px 0 0;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: var(--rsm);
+      padding: 22px 20px;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 24px rgba(0,0,0,0.4);
+      cursor: text;
+      transition: border-color 0.2s;
     }
+    .uuid-box:hover { border-color: rgba(255,255,255,0.18); }
     .uuid-text {
       font-family: var(--mono);
-      font-size: clamp(13px, 2.5vw, 18px);
-      font-weight: 500;
-      color: var(--t1);
-      letter-spacing: 0.5px;
-      flex: 1;
-      word-break: break-all;
-      line-height: 1.4;
+      font-size: clamp(13px, 2.2vw, 18px);
+      font-weight: 500; letter-spacing: 0.8px;
+      line-height: 1.5; word-break: break-all;
       user-select: all;
     }
-    .uuid-seg { color: var(--accent); }
+    .seg-a { color: #f472b6; }
+    .seg-b { color: #60a5fa; }
+    .seg-c { color: var(--indigo); }
+    .seg-d { color: var(--green); }
+    .seg-e { color: #fb923c; }
+    .seg-dash { color: rgba(255,255,255,0.2); }
 
-    /* ── BUTTONS ── */
-    .btn-row {
-      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+    /* ─── COPY BADGE ─────────────────────────────────── */
+    .copy-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; color: var(--green);
+      background: rgba(52,211,153,0.12);
+      border: 1px solid rgba(52,211,153,0.28);
+      padding: 4px 13px; border-radius: 20px;
+      opacity: 0; transform: translateY(4px) scale(0.95);
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none; margin-top: 10px;
     }
+    .copy-badge.show { opacity: 1; transform: translateY(0) scale(1); }
+
+    /* ─── BUTTONS ────────────────────────────────────── */
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
 
     .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-      padding: 12px 22px; border-radius: 12px; border: none;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 24px; border-radius: var(--rbtn); border: none;
       font-size: 14px; font-weight: 600; font-family: var(--font);
-      cursor: pointer; transition: all 0.18s ease; white-space: nowrap;
-      position: relative; overflow: hidden;
-      min-height: 44px;
+      cursor: pointer; min-height: 44px;
+      transition: all 0.18s ease;
+      white-space: nowrap;
       -webkit-tap-highlight-color: transparent;
     }
-    .btn:disabled { opacity: .4; cursor: not-allowed; }
-    .btn::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: rgba(255,255,255,0);
-      transition: background 0.15s;
-    }
-    .btn:active:not(:disabled)::after { background: rgba(255,255,255,0.06); }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn:active:not(:disabled) { transform: scale(0.96); }
 
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent2), #a855f7);
+    .btn-glass-primary {
+      background: linear-gradient(135deg, rgba(99,102,241,0.7), rgba(168,85,247,0.7));
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 0.5px solid rgba(255,255,255,0.25);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.2) inset,
+                  0 8px 24px rgba(99,102,241,0.4);
       color: #fff;
-      box-shadow: 0 4px 20px rgba(99,102,241,0.35);
     }
-    .btn-primary:hover:not(:disabled) {
-      box-shadow: 0 6px 28px rgba(99,102,241,0.5);
+    .btn-glass-primary:hover:not(:disabled) {
+      box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset,
+                  0 12px 32px rgba(99,102,241,0.55);
       transform: translateY(-1px);
     }
-    .btn-secondary {
-      background: var(--glass2);
-      border: 1px solid var(--border2);
+
+    .btn-glass {
+      background: rgba(255,255,255,0.10);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 0.5px solid rgba(255,255,255,0.18);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset,
+                  0 4px 16px rgba(0,0,0,0.35);
       color: var(--t1);
-      backdrop-filter: blur(12px);
     }
-    .btn-secondary:hover:not(:disabled) {
-      background: rgba(255,255,255,0.14);
-      border-color: rgba(255,255,255,0.22);
-    }
-    .btn-ghost {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--t2);
-      font-size: 13px; padding: 8px 16px;
-    }
-    .btn-ghost:hover:not(:disabled) { border-color: var(--border2); color: var(--t1); }
-
-    .btn-green-ghost {
-      background: rgba(52,211,153,0.1);
-      border: 1px solid rgba(52,211,153,0.25);
-      color: var(--green);
-    }
-    .btn-green-ghost:hover:not(:disabled) { background: rgba(52,211,153,0.18); }
-
-    .btn-sm { padding: 8px 16px; font-size: 13px; min-height: 36px; border-radius: 9px; }
-
-    /* ── COPY FEEDBACK ── */
-    .copied-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-size: 12px; font-weight: 600; color: var(--green);
-      background: rgba(52,211,153,0.12); border: 1px solid rgba(52,211,153,0.25);
-      padding: 4px 12px; border-radius: 20px;
-      opacity: 0; transform: translateY(4px);
-      transition: opacity 0.2s, transform 0.2s;
-      pointer-events: none;
-    }
-    .copied-badge.show { opacity: 1; transform: translateY(0); }
-
-    /* ── DIVIDER ── */
-    .divider {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border), transparent);
-      margin: 24px 0;
+    .btn-glass:hover:not(:disabled) {
+      background: rgba(255,255,255,0.15);
     }
 
-    /* ── BULK SECTION ── */
+    .btn-glass-green {
+      background: rgba(52,211,153,0.15);
+      border: 0.5px solid rgba(52,211,153,0.3);
+      box-shadow: 0 1px 0 rgba(52,211,153,0.15) inset;
+      color: var(--green); font-size: 13px;
+      padding: 9px 18px; min-height: 36px;
+    }
+    .btn-glass-green:hover:not(:disabled) { background: rgba(52,211,153,0.22); }
+
+    .btn-sm { padding: 9px 18px; font-size: 13px; min-height: 36px; }
+
+    /* ─── BULK ───────────────────────────────────────── */
     .bulk-controls {
       display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
     }
     .qty-wrap {
-      display: flex; align-items: center; gap: 0;
+      display: flex; align-items: center;
       background: rgba(0,0,0,0.3);
-      border: 1px solid var(--border2);
-      border-radius: 12px; overflow: hidden;
-      flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--rbtn);
+      overflow: hidden;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.07) inset;
     }
     .qty-btn {
       background: none; border: none; color: var(--t2);
-      width: 38px; height: 44px; font-size: 18px; cursor: pointer;
+      width: 40px; height: 44px; font-size: 18px; cursor: pointer;
       transition: color 0.15s, background 0.15s;
       display: flex; align-items: center; justify-content: center;
       -webkit-tap-highlight-color: transparent;
     }
-    .qty-btn:hover { color: var(--t1); background: rgba(255,255,255,0.05); }
+    .qty-btn:hover { color: var(--t1); background: rgba(255,255,255,0.06); }
     .qty-input {
       background: none; border: none; outline: none;
-      color: var(--t1); font-family: var(--mono); font-size: 15px; font-weight: 600;
-      text-align: center; width: 68px; height: 44px;
+      color: var(--t1); font-family: var(--mono);
+      font-size: 15px; font-weight: 700;
+      text-align: center; width: 70px; height: 44px;
       -webkit-appearance: none;
     }
     .qty-input::-webkit-outer-spin-button,
     .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; }
-    .qty-hint { font-size: 12px; color: var(--t3); flex: 1; text-align: right; }
+    .qty-hint { font-size: 12px; color: var(--t3); }
 
-    /* ── UUID LIST ── */
+    /* ─── UUID LIST ──────────────────────────────────── */
     .uuid-list-wrap {
-      margin-top: 16px;
-      background: rgba(0,0,0,0.25);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
+      margin-top: 14px;
+      background: rgba(0,0,0,0.28);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--rsm);
       overflow: hidden;
       display: none;
     }
@@ -307,168 +416,168 @@
 
     .uuid-list-header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 16px; border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
       background: rgba(255,255,255,0.03);
     }
     .uuid-list-count { font-size: 12px; font-weight: 600; color: var(--t2); }
 
     .uuid-list {
       list-style: none;
-      max-height: 320px; overflow-y: auto;
+      max-height: 280px; overflow-y: auto;
       overscroll-behavior: contain;
       scrollbar-width: thin;
-      scrollbar-color: var(--border) transparent;
+      scrollbar-color: rgba(255,255,255,0.12) transparent;
     }
     .uuid-list::-webkit-scrollbar { width: 4px; }
-    .uuid-list::-webkit-scrollbar-track { background: transparent; }
-    .uuid-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .uuid-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
 
     .uuid-item {
       display: flex; align-items: center; gap: 10px;
-      padding: 9px 16px; border-bottom: 1px solid rgba(255,255,255,0.04);
+      padding: 9px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
       transition: background 0.12s;
     }
     .uuid-item:last-child { border-bottom: none; }
-    .uuid-item:hover { background: rgba(255,255,255,0.03); }
-    .uuid-item-num {
-      font-size: 11px; color: var(--t3); font-family: var(--mono);
-      width: 28px; flex-shrink: 0; text-align: right;
-    }
-    .uuid-item-val {
-      font-family: var(--mono); font-size: 12.5px; color: var(--t2);
-      flex: 1; user-select: all;
-    }
-    .uuid-item-copy {
+    .uuid-item:hover { background: rgba(255,255,255,0.04); }
+    .uuid-num { font-size: 11px; color: var(--t3); font-family: var(--mono); width: 28px; text-align: right; flex-shrink: 0; }
+    .uuid-val { font-family: var(--mono); font-size: 12px; color: var(--t2); flex: 1; user-select: all; word-break: break-all; }
+    .uuid-copy-btn {
       background: none; border: none; cursor: pointer; color: var(--t3);
-      padding: 4px; border-radius: 6px; transition: color 0.15s, background 0.15s;
+      padding: 5px; border-radius: 8px; transition: color 0.15s, background 0.15s;
       display: flex; align-items: center; justify-content: center;
       opacity: 0; flex-shrink: 0;
       -webkit-tap-highlight-color: transparent;
     }
-    .uuid-item:hover .uuid-item-copy { opacity: 1; }
-    .uuid-item-copy:hover { color: var(--accent); background: rgba(129,140,248,0.12); }
+    .uuid-item:hover .uuid-copy-btn { opacity: 1; }
+    .uuid-copy-btn:hover { color: var(--indigo); background: rgba(129,140,248,0.1); }
 
     .uuid-list-footer {
-      display: flex; gap: 8px; padding: 12px 16px;
-      border-top: 1px solid var(--border);
+      display: flex; gap: 8px; padding: 12px 14px;
+      border-top: 1px solid rgba(255,255,255,0.06);
       background: rgba(255,255,255,0.02);
       flex-wrap: wrap;
     }
 
-    /* ── INFO SECTION ── */
+    /* ─── INFO ───────────────────────────────────────── */
     .info-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 14px; margin-top: 4px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px; margin-bottom: 4px;
     }
-    .info-chip {
-      background: rgba(0,0,0,0.2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 14px 16px;
+    .info-tile {
+      background: rgba(0,0,0,0.22);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--rsm);
+      padding: 16px;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset;
     }
-    .info-chip-icon { font-size: 20px; margin-bottom: 8px; }
-    .info-chip-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-    .info-chip-body { font-size: 12px; color: var(--t2); line-height: 1.6; }
+    .info-tile-icon { font-size: 22px; margin-bottom: 9px; }
+    .info-tile-title { font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+    .info-tile-body { font-size: 12px; color: var(--t2); line-height: 1.65; }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      margin: 22px 0;
+    }
 
     .uuid-anatomy {
       font-family: var(--mono); font-size: 13px;
-      background: rgba(0,0,0,0.3); border: 1px solid var(--border);
-      border-radius: 10px; padding: 14px 16px;
-      letter-spacing: 0.3px; word-break: break-all;
-      line-height: 1.8; margin-top: 16px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 16px 18px;
+      letter-spacing: 0.4px; word-break: break-all; line-height: 2;
     }
-    .seg-a { color: #f472b6; }
-    .seg-b { color: #60a5fa; }
-    .seg-c { color: var(--accent); }
-    .seg-d { color: #34d399; }
-    .seg-e { color: #fb923c; }
     .seg-label {
-      font-family: var(--font); font-size: 11px; color: var(--t3);
-      display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px;
+      display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px;
+      font-size: 11px; color: var(--t3);
     }
     .seg-label span { display: flex; align-items: center; gap: 5px; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
 
-    /* ── TOAST ── */
+    /* ─── TOAST ──────────────────────────────────────── */
     #toasts {
       position: fixed;
-      bottom: max(24px, env(safe-area-inset-bottom));
+      bottom: max(28px, env(safe-area-inset-bottom, 0px));
       left: 50%; transform: translateX(-50%);
       display: flex; flex-direction: column; align-items: center; gap: 8px;
       z-index: 9999; pointer-events: none;
     }
     .toast {
-      background: rgba(20,20,30,0.92);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      color: var(--t1);
-      padding: 11px 18px; border-radius: 24px;
+      background: rgba(16,16,24,0.92);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 0.5px solid rgba(255,255,255,0.14);
+      color: var(--t1); padding: 11px 20px; border-radius: 100px;
       font-size: 13.5px; font-weight: 500;
       display: flex; align-items: center; gap: 8px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.1) inset, 0 12px 40px rgba(0,0,0,0.5);
       animation: tup .22s cubic-bezier(.34,1.56,.64,1);
       white-space: nowrap;
     }
-    .toast.ok  { border-color: rgba(52,211,153,0.3); }
-    .toast.err { border-color: rgba(248,113,113,0.3); }
-    @keyframes tup { from { transform: translateY(12px); opacity: 0; } }
+    .toast.ok  { color: var(--green); }
+    .toast.err { color: var(--red); }
+    @keyframes tup { from { transform: translateY(14px) scale(0.9); opacity: 0; } }
 
-    /* ── INSTALL BANNER ── */
+    /* ─── INSTALL BANNER ─────────────────────────────── */
     #install-banner {
-      display: none;
       position: fixed;
-      bottom: max(24px, env(safe-area-inset-bottom));
-      left: 50%; transform: translateX(-50%);
-      background: rgba(15,15,25,0.95);
+      bottom: max(24px, calc(env(safe-area-inset-bottom, 0px) + 12px));
+      right: 24px;
+      background: rgba(12,12,20,0.92);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid var(--border2);
-      border-radius: 16px; padding: 14px 18px;
+      border: 0.5px solid rgba(255,255,255,0.16);
+      border-radius: 20px; padding: 14px 18px;
       display: none; align-items: center; gap: 12px;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-      z-index: 1000; max-width: calc(100vw - 32px);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.1) inset, 0 16px 48px rgba(0,0,0,0.6);
+      z-index: 1000; max-width: calc(100vw - 48px);
       animation: tup .3s ease;
     }
     #install-banner.show { display: flex; }
     .install-text { font-size: 13px; font-weight: 500; }
     .install-sub  { font-size: 11px; color: var(--t2); margin-top: 2px; }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 640px) {
-      .wrap { padding: 24px 14px 60px; }
-      .card { padding: 20px 18px; }
-      .uuid-text { font-size: 12px; }
-      .uuid-item-val { font-size: 11.5px; }
-      .btn-row { flex-direction: column; align-items: stretch; }
-      .btn-row .btn { justify-content: center; }
-      .bulk-controls { flex-direction: column; align-items: stretch; }
-      .qty-hint { text-align: left; }
-      .uuid-list-footer { flex-direction: column; }
-      .uuid-list-footer .btn { justify-content: center; }
-      .info-grid { grid-template-columns: 1fr; }
-    }
-
-    /* ── SUPPORT NOTICE ── */
+    /* ─── COMPAT ─────────────────────────────────────── */
     .compat-notice {
       display: none;
-      background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2);
+      background: rgba(248,113,113,0.08);
+      border: 1px solid rgba(248,113,113,0.2);
       border-radius: 10px; padding: 12px 14px;
       font-size: 13px; color: #fca5a5; line-height: 1.5; margin-top: 12px;
     }
     .compat-notice.show { display: block; }
+
+    /* ─── MOBILE ─────────────────────────────────────── */
+    @media (max-width: 680px) {
+      .sidebar { display: none; }
+      .mobile-nav {
+        display: flex !important;
+        gap: 6px; margin-right: auto;
+      }
+      .content { padding: 20px 16px 48px; }
+      .glass { padding: 20px 18px; }
+      .uuid-text { font-size: 12px; }
+      .btn-row { flex-direction: column; align-items: stretch; }
+      .btn-row .btn { justify-content: center; }
+      .bulk-controls { flex-direction: column; align-items: stretch; }
+      .uuid-list-footer { flex-direction: column; }
+      .uuid-list-footer .btn { justify-content: center; }
+    }
+    @media (min-width: 681px) {
+      .mobile-nav { display: none !important; }
+    }
   </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="hdr">
-  <div class="hdr-inner">
-    <div class="hdr-logo">⬡</div>
-    <span class="hdr-title">UUID Generator</span>
-    <span class="hdr-badge">v4</span>
-  </div>
-</header>
+<!-- BACKGROUND -->
+<div class="bg" aria-hidden="true">
+  <div class="bg-blob blob1"></div>
+  <div class="bg-blob blob2"></div>
+  <div class="bg-blob blob3"></div>
+</div>
 
 <!-- TOASTS -->
 <div id="toasts"></div>
@@ -478,142 +587,210 @@
   <span style="font-size:22px">📲</span>
   <div>
     <div class="install-text">Install UUID Generator</div>
-    <div class="install-sub">Works offline, no browser needed</div>
+    <div class="install-sub">Works offline · No browser needed</div>
   </div>
-  <button class="btn btn-primary btn-sm" id="install-btn">Install</button>
-  <button class="btn btn-ghost btn-sm" id="install-dismiss" style="padding:8px 10px;">✕</button>
+  <button class="btn btn-glass-primary btn-sm" id="install-btn">Install</button>
+  <button class="btn btn-glass btn-sm" id="install-dismiss" style="padding:9px 12px; min-width:36px">✕</button>
 </div>
 
-<div class="wrap">
+<div class="root">
 
-  <!-- ── HERO CARD ── -->
-  <div class="card hero">
-    <div class="hero-eyebrow">Cryptographically Secure</div>
-    <div class="hero-title">UUID v4 Generator</div>
-    <div class="hero-sub">Instant, unique identifiers for your apps, databases and APIs.</div>
-
-    <div class="uuid-box" id="uuid-box" onclick="selectUUID()">
-      <span class="uuid-text" id="uuid-display">—</span>
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-icon">⬡</div>
+      <span class="sidebar-name">UUID Generator</span>
     </div>
 
-    <div class="copied-badge" id="copy-badge">&#10003; Copied!</div>
+    <ul class="nav-list">
+      <li class="nav-item active" data-tab="main">
+        <span class="nav-icon">⊞</span> Generator
+      </li>
+      <li class="nav-item" data-tab="bulk">
+        <span class="nav-icon">⊟</span> Bulk
+      </li>
+      <li class="nav-item" data-tab="info">
+        <span class="nav-icon">ⓘ</span> About UUID
+      </li>
+    </ul>
 
-    <div class="btn-row" style="margin-top:16px">
-      <button class="btn btn-primary" id="btn-copy" onclick="copyMain()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-        Copy UUID
-      </button>
-      <button class="btn btn-secondary" onclick="generateMain()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
-        New UUID
-      </button>
-    </div>
-
-    <div class="compat-notice" id="compat-notice">
-      Your browser does not support <code>crypto.randomUUID()</code>. A fallback using the Web Crypto API is active, but consider upgrading for best security.
-    </div>
-  </div>
-
-  <!-- ── BULK CARD ── -->
-  <div class="card">
-    <div class="section-label">Bulk Generation</div>
-
-    <div class="bulk-controls">
-      <div class="qty-wrap">
-        <button class="qty-btn" onclick="adjustQty(-1)" aria-label="Decrease">−</button>
-        <input class="qty-input" type="number" id="qty-input" value="10" min="1" max="500"
-               inputmode="numeric" aria-label="Quantity">
-        <button class="qty-btn" onclick="adjustQty(1)" aria-label="Increase">+</button>
+    <div class="sidebar-footer">
+      <div class="v4-badge">
+        <span class="v4-dot"></span>
+        RFC 4122 · v4
       </div>
-      <button class="btn btn-primary" onclick="generateBulk()" style="flex:1; max-width:180px">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-        Generate
-      </button>
-      <span class="qty-hint">max 500</span>
     </div>
+  </aside>
 
-    <div class="uuid-list-wrap" id="bulk-wrap">
-      <div class="uuid-list-header">
-        <span class="uuid-list-count" id="bulk-count"></span>
-        <button class="btn btn-ghost btn-sm" onclick="clearBulk()">Clear</button>
-      </div>
-      <ul class="uuid-list" id="uuid-list"></ul>
-      <div class="uuid-list-footer">
-        <button class="btn btn-secondary btn-sm" onclick="copyAll()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          Copy All
+  <!-- ── MAIN ── -->
+  <div class="main">
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <!-- mobile nav tabs -->
+      <div class="mobile-nav" role="tablist">
+        <button class="tb-btn primary active-mobile" data-tab="main" title="Generator">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
         </button>
-        <button class="btn btn-green-ghost btn-sm" onclick="downloadTxt()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download .txt
+        <button class="tb-btn" data-tab="bulk" title="Bulk">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </button>
+        <button class="tb-btn" data-tab="info" title="Info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
         </button>
       </div>
-    </div>
-  </div>
 
-  <!-- ── INFO CARD ── -->
-  <div class="card">
-    <div class="section-label">What is a UUID v4?</div>
-
-    <div class="info-grid">
-      <div class="info-chip">
-        <div class="info-chip-icon">🔐</div>
-        <div class="info-chip-title">Cryptographically random</div>
-        <div class="info-chip-body">Generated from 122 bits of secure random data. Virtually impossible to predict or guess.</div>
-      </div>
-      <div class="info-chip">
-        <div class="info-chip-icon">🌍</div>
-        <div class="info-chip-title">Globally unique</div>
-        <div class="info-chip-body">The probability of two UUIDs colliding is astronomically small — roughly 1 in 5.3×10³⁶.</div>
-      </div>
-      <div class="info-chip">
-        <div class="info-chip-icon">📐</div>
-        <div class="info-chip-title">Standard format</div>
-        <div class="info-chip-body">32 hex digits in 8-4-4-4-12 groups, defined by RFC 4122. Universally supported.</div>
-      </div>
-      <div class="info-chip">
-        <div class="info-chip-icon">⚡</div>
-        <div class="info-chip-title">No server needed</div>
-        <div class="info-chip-body">Generated entirely in your browser using the Web Crypto API. Nothing leaves your device.</div>
-      </div>
+      <!-- action buttons -->
+      <button class="tb-btn primary" id="tb-copy" onclick="copyMain()" title="Copy UUID">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      </button>
+      <button class="tb-btn" onclick="generateMain()" title="New UUID">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+      </button>
     </div>
 
-    <div class="divider"></div>
+    <!-- ── TAB: GENERATOR ── -->
+    <section class="section active" id="tab-main">
+      <div class="content">
 
-    <div style="font-size:13px; color:var(--t2); margin-bottom:10px; font-weight:500;">Anatomy of a UUID v4</div>
-    <div class="uuid-anatomy">
-      <span class="seg-a">xxxxxxxx</span>-<span class="seg-b">xxxx</span>-<span class="seg-c">4xxx</span>-<span class="seg-d">yxxx</span>-<span class="seg-e">xxxxxxxxxxxx</span>
-    </div>
-    <div class="seg-label">
-      <span><span class="dot" style="background:#f472b6"></span>time_low</span>
-      <span><span class="dot" style="background:#60a5fa"></span>time_mid</span>
-      <span><span class="dot" style="background:var(--accent)"></span>version (4)</span>
-      <span><span class="dot" style="background:#34d399"></span>variant</span>
-      <span><span class="dot" style="background:#fb923c"></span>node</span>
-    </div>
-  </div>
+        <div class="glass">
+          <div class="hero-eyebrow">Cryptographically Secure</div>
+          <div class="hero-title">UUID v4 Generator</div>
+          <div class="hero-sub">Instant, unique identifiers generated in your browser.<br>Nothing leaves your device.</div>
 
-</div><!-- /wrap -->
+          <div class="uuid-box" id="uuid-box" onclick="selectUUID()">
+            <div class="uuid-text" id="uuid-display">—</div>
+          </div>
+
+          <div class="copy-badge" id="copy-badge">&#10003;&nbsp;Copied to clipboard</div>
+
+          <div class="btn-row">
+            <button class="btn btn-glass-primary" onclick="copyMain()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy UUID
+            </button>
+            <button class="btn btn-glass" onclick="generateMain()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+              New UUID
+            </button>
+          </div>
+
+          <div class="compat-notice" id="compat-notice">
+            Your browser does not fully support <code>crypto.randomUUID()</code>. A Web Crypto API fallback is active.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── TAB: BULK ── -->
+    <section class="section" id="tab-bulk">
+      <div class="content">
+
+        <div class="glass">
+          <div class="section-label">Bulk Generation</div>
+
+          <div class="bulk-controls">
+            <div class="qty-wrap">
+              <button class="qty-btn" onclick="adjustQty(-10)" aria-label="−10">−</button>
+              <input class="qty-input" type="number" id="qty-input" value="10" min="1" max="500" inputmode="numeric" aria-label="Quantity">
+              <button class="qty-btn" onclick="adjustQty(10)" aria-label="+10">+</button>
+            </div>
+            <button class="btn btn-glass-primary" onclick="generateBulk()" style="flex:1; max-width:200px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              Generate
+            </button>
+            <span class="qty-hint">max 500</span>
+          </div>
+
+          <div class="uuid-list-wrap" id="bulk-wrap">
+            <div class="uuid-list-header">
+              <span class="uuid-list-count" id="bulk-count"></span>
+              <button class="btn btn-glass btn-sm" style="border-radius:20px; padding:5px 14px; font-size:12px; min-height:30px" onclick="clearBulk()">Clear</button>
+            </div>
+            <ul class="uuid-list" id="uuid-list"></ul>
+            <div class="uuid-list-footer">
+              <button class="btn btn-glass btn-sm" onclick="copyAll()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy All
+              </button>
+              <button class="btn btn-glass-green" onclick="downloadTxt()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download .txt
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── TAB: INFO ── -->
+    <section class="section" id="tab-info">
+      <div class="content">
+
+        <div class="glass">
+          <div class="section-label">What is UUID v4?</div>
+
+          <div class="info-grid">
+            <div class="info-tile">
+              <div class="info-tile-icon">🔐</div>
+              <div class="info-tile-title">Cryptographically random</div>
+              <div class="info-tile-body">Generated from 122 bits of secure random data. Virtually impossible to predict or guess.</div>
+            </div>
+            <div class="info-tile">
+              <div class="info-tile-icon">🌍</div>
+              <div class="info-tile-title">Globally unique</div>
+              <div class="info-tile-body">The probability of two UUIDs colliding is roughly 1 in 5.3×10³⁶ — for practical purposes, impossible.</div>
+            </div>
+            <div class="info-tile">
+              <div class="info-tile-icon">📐</div>
+              <div class="info-tile-title">Standard format</div>
+              <div class="info-tile-body">32 hex digits in 8-4-4-4-12 groups, defined by RFC 4122. Universally supported.</div>
+            </div>
+            <div class="info-tile">
+              <div class="info-tile-icon">⚡</div>
+              <div class="info-tile-title">No server needed</div>
+              <div class="info-tile-body">Generated entirely in your browser using the Web Crypto API. Nothing leaves your device.</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div style="font-size:13px; color:var(--t2); margin-bottom:10px; font-weight:500">Anatomy of a UUID v4</div>
+          <div class="uuid-anatomy">
+            <span class="seg-a">xxxxxxxx</span><span class="seg-dash">-</span><span class="seg-b">xxxx</span><span class="seg-dash">-</span><span class="seg-c">4xxx</span><span class="seg-dash">-</span><span class="seg-d">yxxx</span><span class="seg-dash">-</span><span class="seg-e">xxxxxxxxxxxx</span>
+          </div>
+          <div class="seg-label">
+            <span><span class="dot" style="background:#f472b6"></span>time_low</span>
+            <span><span class="dot" style="background:#60a5fa"></span>time_mid</span>
+            <span><span class="dot" style="background:var(--indigo)"></span>version (4)</span>
+            <span><span class="dot" style="background:var(--green)"></span>variant</span>
+            <span><span class="dot" style="background:#fb923c"></span>node</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div><!-- /main -->
+</div><!-- /root -->
 
 <script>
-// ── UUID GENERATION ────────────────────────────────────────────────────────
+// ── UUID ─────────────────────────────────────────────────────────────────
 function supportsNativeUUID() {
   return typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function';
 }
 
 function generateUUID() {
-  if (supportsNativeUUID()) {
-    return crypto.randomUUID();
-  }
-  // Fallback: RFC 4122 v4 via Web Crypto
+  if (supportsNativeUUID()) return crypto.randomUUID();
   if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
     const b = crypto.getRandomValues(new Uint8Array(16));
-    b[6] = (b[6] & 0x0f) | 0x40; // version 4
-    b[8] = (b[8] & 0x3f) | 0x80; // variant 10xx
+    b[6] = (b[6] & 0x0f) | 0x40;
+    b[8] = (b[8] & 0x3f) | 0x80;
     const h = Array.from(b).map(x => x.toString(16).padStart(2, '0')).join('');
     return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;
   }
-  // Last-resort fallback (insecure — show warning)
   document.getElementById('compat-notice').classList.add('show');
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
     const r = Math.random() * 16 | 0;
@@ -622,20 +799,20 @@ function generateUUID() {
 }
 
 function generateUnique(count) {
-  const set = new Set();
-  while (set.size < count) set.add(generateUUID());
-  return [...set];
+  const s = new Set();
+  while (s.size < count) s.add(generateUUID());
+  return [...s];
 }
 
-// ── MAIN UUID ──────────────────────────────────────────────────────────────
+// ── RENDER ───────────────────────────────────────────────────────────────
 let currentUUID = '';
 
 function renderMain(uuid) {
   currentUUID = uuid;
   const parts = uuid.split('-');
-  const classes = ['seg-a','seg-b','seg-c','seg-d','seg-e'];
-  const el = document.getElementById('uuid-display');
-  el.innerHTML = parts.map((p, i) => `<span class="${classes[i]}">${p}</span>`).join('<span style="color:var(--t3)">-</span>');
+  const cls   = ['seg-a','seg-b','seg-c','seg-d','seg-e'];
+  document.getElementById('uuid-display').innerHTML =
+    parts.map((p,i) => `<span class="${cls[i]}">${p}</span>`).join('<span class="seg-dash">-</span>');
 }
 
 function generateMain() {
@@ -644,53 +821,47 @@ function generateMain() {
 
 function selectUUID() {
   const el = document.getElementById('uuid-display');
-  const range = document.createRange();
-  range.selectNodeContents(el);
+  const r  = document.createRange();
+  r.selectNodeContents(el);
   window.getSelection().removeAllRanges();
-  window.getSelection().addRange(range);
+  window.getSelection().addRange(r);
 }
 
-// ── CLIPBOARD ─────────────────────────────────────────────────────────────
+// ── CLIPBOARD ────────────────────────────────────────────────────────────
 async function writeClipboard(text) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
     await navigator.clipboard.writeText(text);
   } else {
-    const ta = document.createElement('textarea');
-    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    const ta = Object.assign(document.createElement('textarea'),
+      { value: text, style: 'position:fixed;opacity:0' });
     document.body.appendChild(ta); ta.select();
     document.execCommand('copy');
     document.body.removeChild(ta);
   }
 }
 
-let copyTimeout;
+let copyTimer;
 async function copyMain() {
   try {
     await writeClipboard(currentUUID);
     const badge = document.getElementById('copy-badge');
     badge.classList.add('show');
-    clearTimeout(copyTimeout);
-    copyTimeout = setTimeout(() => badge.classList.remove('show'), 1800);
-  } catch {
-    toast('Could not access clipboard', 'err');
-  }
+    clearTimeout(copyTimer);
+    copyTimer = setTimeout(() => badge.classList.remove('show'), 2000);
+  } catch { toast('Could not access clipboard', 'err'); }
 }
 
-// ── BULK ──────────────────────────────────────────────────────────────────
+// ── BULK ─────────────────────────────────────────────────────────────────
 let bulkUUIDs = [];
 
 function getQty() {
-  const raw = parseInt(document.getElementById('qty-input').value, 10);
-  if (isNaN(raw) || raw < 1)  return 1;
-  if (raw > 500) return 500;
-  return raw;
+  const v = parseInt(document.getElementById('qty-input').value, 10);
+  return Math.max(1, Math.min(500, isNaN(v) ? 10 : v));
 }
 
 function adjustQty(delta) {
   const input = document.getElementById('qty-input');
-  let val = parseInt(input.value, 10) || 10;
-  val = Math.max(1, Math.min(500, val + delta));
-  input.value = val;
+  input.value = Math.max(1, Math.min(500, (parseInt(input.value, 10) || 10) + delta));
 }
 
 function generateBulk() {
@@ -698,17 +869,16 @@ function generateBulk() {
   document.getElementById('qty-input').value = qty;
   bulkUUIDs = generateUnique(qty);
 
-  const list = document.getElementById('uuid-list');
-  list.innerHTML = bulkUUIDs.map((u, i) => `
+  document.getElementById('uuid-list').innerHTML = bulkUUIDs.map((u, i) => `
     <li class="uuid-item">
-      <span class="uuid-item-num">${i + 1}</span>
-      <span class="uuid-item-val">${u}</span>
-      <button class="uuid-item-copy" onclick="copyOne('${u}')" title="Copy" aria-label="Copy">
+      <span class="uuid-num">${i + 1}</span>
+      <span class="uuid-val">${u}</span>
+      <button class="uuid-copy-btn" onclick="copyOne('${u}')" title="Copy" aria-label="Copy">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
       </button>
     </li>`).join('');
 
-  document.getElementById('bulk-count').textContent = `${qty} UUIDs generated`;
+  document.getElementById('bulk-count').textContent = `${qty} UUIDs`;
   document.getElementById('bulk-wrap').classList.add('visible');
 }
 
@@ -719,62 +889,63 @@ function clearBulk() {
 }
 
 async function copyOne(uuid) {
-  try {
-    await writeClipboard(uuid);
-    toast('Copied!', 'ok');
-  } catch {
-    toast('Could not access clipboard', 'err');
-  }
+  try { await writeClipboard(uuid); toast('Copied!', 'ok'); }
+  catch { toast('Could not access clipboard', 'err'); }
 }
 
 async function copyAll() {
   if (!bulkUUIDs.length) return;
-  try {
-    await writeClipboard(bulkUUIDs.join('\n'));
-    toast(`${bulkUUIDs.length} UUIDs copied!`, 'ok');
-  } catch {
-    toast('Could not access clipboard', 'err');
-  }
+  try { await writeClipboard(bulkUUIDs.join('\n')); toast(`${bulkUUIDs.length} UUIDs copied`, 'ok'); }
+  catch { toast('Could not access clipboard', 'err'); }
 }
 
 function downloadTxt() {
   if (!bulkUUIDs.length) return;
-  const blob = new Blob([bulkUUIDs.join('\n')], { type: 'text/plain' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `uuids-${Date.now()}.txt`;
-  a.click();
-  URL.revokeObjectURL(a.href);
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(new Blob([bulkUUIDs.join('\n')], { type: 'text/plain' })),
+    download: `uuids-${Date.now()}.txt`
+  });
+  a.click(); URL.revokeObjectURL(a.href);
 }
 
-// ── TOAST ─────────────────────────────────────────────────────────────────
-function toast(msg, type = 'ok', duration = 2200) {
-  const el = document.createElement('div');
-  el.className = `toast ${type}`;
-  el.textContent = type === 'ok' ? `✓ ${msg}` : `✕ ${msg}`;
-  const container = document.getElementById('toasts');
-  container.appendChild(el);
-  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; }, duration - 300);
-  setTimeout(() => el.remove(), duration);
+// ── TABS ─────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.tab === tab);
+  });
+  document.querySelectorAll('.mobile-nav .tb-btn').forEach(el => {
+    el.classList.toggle('primary', el.dataset.tab === tab);
+  });
+  document.querySelectorAll('.section').forEach(el => {
+    el.classList.toggle('active', el.id === `tab-${tab}`);
+  });
 }
 
-// ── INPUT GUARD ────────────────────────────────────────────────────────────
-document.getElementById('qty-input').addEventListener('change', function() {
-  let v = parseInt(this.value, 10);
-  if (isNaN(v) || v < 1) v = 1;
-  if (v > 500) v = 500;
-  this.value = v;
+document.querySelectorAll('[data-tab]').forEach(el => {
+  el.addEventListener('click', () => switchTab(el.dataset.tab));
 });
 
-// ── PWA / INSTALL ─────────────────────────────────────────────────────────
+// ── TOAST ────────────────────────────────────────────────────────────────
+function toast(msg, type = 'ok', ms = 2200) {
+  const el = Object.assign(document.createElement('div'), { className: `toast ${type}` });
+  el.textContent = type === 'ok' ? `✓  ${msg}` : `✕  ${msg}`;
+  const box = document.getElementById('toasts');
+  box.appendChild(el);
+  setTimeout(() => { el.style.cssText = 'opacity:0;transition:opacity .3s'; }, ms - 300);
+  setTimeout(() => el.remove(), ms);
+}
+
+// ── INPUT GUARD ──────────────────────────────────────────────────────────
+document.getElementById('qty-input').addEventListener('change', function() {
+  this.value = Math.max(1, Math.min(500, parseInt(this.value, 10) || 1));
+});
+
+// ── PWA INSTALL ──────────────────────────────────────────────────────────
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const banner = document.getElementById('install-banner');
-  banner.classList.add('show');
+  e.preventDefault(); deferredPrompt = e;
+  document.getElementById('install-banner').classList.add('show');
 });
-
 document.getElementById('install-btn').addEventListener('click', async () => {
   if (!deferredPrompt) return;
   deferredPrompt.prompt();
@@ -783,20 +954,15 @@ document.getElementById('install-btn').addEventListener('click', async () => {
   deferredPrompt = null;
   document.getElementById('install-banner').classList.remove('show');
 });
-
 document.getElementById('install-dismiss').addEventListener('click', () => {
   document.getElementById('install-banner').classList.remove('show');
 });
 
 // ── SERVICE WORKER ────────────────────────────────────────────────────────
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(() => {});
-}
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
 
-// ── INIT ───────────────────────────────────────────────────────────────────
-if (!supportsNativeUUID()) {
-  document.getElementById('compat-notice').classList.add('show');
-}
+// ── INIT ──────────────────────────────────────────────────────────────────
+if (!supportsNativeUUID()) document.getElementById('compat-notice').classList.add('show');
 generateMain();
 </script>
 </body>
