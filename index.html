@@ -3,14 +3,122 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>UUID Generator</title>
+
+  <!-- ── Primary SEO ─────────────────────────────────────────────────── -->
+  <title>Free UUID Generator Online — Generate UUID v4 Instantly</title>
+  <meta name="description" content="Generate cryptographically secure UUID v4 identifiers instantly, for free. Bulk generate up to 500 UUIDs, copy to clipboard or download as .txt. No ads, no sign-up, works offline.">
+  <meta name="keywords" content="UUID generator, UUID v4 generator, online UUID generator, generate UUID, random UUID, bulk UUID generator, free UUID generator, unique identifier, GUID generator, RFC 4122">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://pborges-art.github.io/uuid_website/">
+
+  <!-- ── Open Graph ───────────────────────────────────────────────────── -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="UUID Generator">
+  <meta property="og:title" content="Free UUID Generator Online — Generate UUID v4 Instantly">
+  <meta property="og:description" content="Generate cryptographically secure UUID v4 identifiers instantly. Bulk generate up to 500 UUIDs, copy or download. Free, no ads, works offline.">
+  <meta property="og:url" content="https://pborges-art.github.io/uuid_website/">
+  <meta property="og:locale" content="en_US">
+
+  <!-- ── Twitter Card ─────────────────────────────────────────────────── -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Free UUID Generator Online — UUID v4">
+  <meta name="twitter:description" content="Generate cryptographically secure UUID v4 identifiers instantly. Bulk up to 500, copy or download .txt. Free, no ads, offline-ready.">
+
+  <!-- ── PWA ─────────────────────────────────────────────────────────── -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#06060e">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="UUID Gen">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <meta name="description" content="Generate secure UUID v4 identifiers instantly. Works offline.">
+  <link rel="icon" href="icon-192.png" type="image/png">
+
+  <!-- ── JSON-LD Structured Data ─────────────────────────────────────── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://pborges-art.github.io/uuid_website/#app",
+        "name": "UUID Generator",
+        "url": "https://pborges-art.github.io/uuid_website/",
+        "description": "Free online UUID v4 generator. Generate cryptographically secure, globally unique identifiers instantly in your browser.",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires a modern browser with Web Crypto API support.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": [
+          "UUID v4 generation using Web Crypto API",
+          "Bulk UUID generation up to 500",
+          "One-click clipboard copy",
+          "Download as .txt file",
+          "Works fully offline as a PWA",
+          "Installable on iOS, Android and Desktop",
+          "No ads, no sign-up required"
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://pborges-art.github.io/uuid_website/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is a UUID?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "UUID stands for Universally Unique Identifier. It is a 128-bit label used to uniquely identify information in computer systems, formatted as 32 hexadecimal digits in the pattern xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx. UUIDs are defined by RFC 4122 and are used in databases, APIs, distributed systems, and software development."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is a UUID v4?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "UUID version 4 (UUID v4) is generated using cryptographically random data. It consists of 122 random bits plus 6 fixed version and variant bits, making it virtually impossible to predict or collide with another UUID. It is the most widely used UUID version for generating unique IDs in applications."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are the UUIDs generated here safe to use in production?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. This generator uses the browser's built-in crypto.randomUUID() function, which relies on the Web Crypto API — the same cryptographic source used by operating systems and security-critical software. The UUIDs are fully RFC 4122 compliant and safe for use in production databases, APIs, and distributed systems."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can two generated UUIDs ever be the same?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The probability of generating two identical UUID v4s is approximately 1 in 5.3 × 10^36. In practice, this is astronomically unlikely. For reference, you would need to generate 1 billion UUIDs per second for 85 years before the probability of a single collision reached 50%."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the difference between UUID and GUID?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "GUID (Globally Unique Identifier) is Microsoft's implementation of the UUID standard. They are functionally identical — both follow the RFC 4122 specification and use the same 128-bit format. The term GUID is commonly used in Microsoft/.NET ecosystems, while UUID is the standard term in web, database, and open-source contexts."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I generate multiple UUIDs at once?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Use the Bulk Generation section on this page. Enter a quantity between 1 and 500, click Generate, then copy all UUIDs to your clipboard with Copy All or download them as a .txt file."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -416,6 +524,39 @@
     .seg-legend span { display: flex; align-items: center; gap: 5px; }
     .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
 
+    /* ══ FAQ ═════════════════════════════════════════════════════════════ */
+    .faq-list { display: flex; flex-direction: column; gap: 2px; }
+    .faq-item {
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 4px 0;
+    }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.88);
+      cursor: pointer; padding: 13px 0;
+      list-style: none;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      -webkit-tap-highlight-color: transparent;
+      transition: color 0.15s;
+    }
+    .faq-q::-webkit-details-marker { display: none; }
+    .faq-q::after {
+      content: '+';
+      font-size: 18px; font-weight: 300; color: rgba(255,255,255,0.3);
+      flex-shrink: 0; transition: transform 0.2s, color 0.15s;
+    }
+    .faq-item[open] .faq-q::after { transform: rotate(45deg); color: #818cf8; }
+    .faq-item[open] .faq-q { color: #fff; }
+    .faq-a {
+      font-size: 13.5px; color: rgba(255,255,255,0.5); line-height: 1.7;
+      padding-bottom: 14px;
+    }
+    .faq-a code {
+      font-family: var(--mono); font-size: 12px;
+      background: rgba(129,140,248,0.12); border: 1px solid rgba(129,140,248,0.2);
+      padding: 1px 6px; border-radius: 5px; color: #818cf8;
+    }
+
     /* ══ TOAST ═══════════════════════════════════════════════════════════ */
     #toasts {
       position: fixed;
@@ -519,6 +660,9 @@
       <li><a class="sb-link" href="#about" onclick="setActive(this)">
         <span class="sb-ico">ⓘ</span> About UUID
       </a></li>
+      <li><a class="sb-link" href="#faq" onclick="setActive(this)">
+        <span class="sb-ico">?</span> FAQ
+      </a></li>
     </ul>
     <div class="sb-footer">
       <div class="sb-badge"><span class="live-dot"></span>RFC 4122 · v4</div>
@@ -543,9 +687,9 @@
 
       <!-- ── GENERATOR ── -->
       <div class="glass hero-card" id="generator">
-        <div class="eyebrow">Cryptographically Secure</div>
-        <div class="hero-title">UUID v4 Generator</div>
-        <div class="hero-sub">Instant, unique identifiers generated in your browser.<br>Nothing leaves your device.</div>
+        <p class="eyebrow">Cryptographically Secure</p>
+        <h1 class="hero-title">UUID v4 Generator</h1>
+        <p class="hero-sub">Instant, unique identifiers generated in your browser.<br>Nothing leaves your device.</p>
 
         <div class="uuid-box" onclick="selectUUID()">
           <div class="uuid-text" id="uuid-display">—</div>
@@ -571,7 +715,7 @@
 
       <!-- ── BULK ── -->
       <div class="glass bulk-card" id="bulk">
-        <div class="sec-label">Bulk Generation</div>
+        <h2 class="sec-label">Bulk UUID Generation</h2>
 
         <div class="bulk-controls">
           <div class="qty-wrap">
@@ -607,35 +751,35 @@
 
       <!-- ── ABOUT ── -->
       <div class="glass info-card" id="about">
-        <div class="sec-label">What is UUID v4?</div>
+        <h2 class="sec-label">What is UUID v4?</h2>
 
         <div class="info-grid">
           <div class="info-tile">
             <div class="info-tile-ico">🔐</div>
-            <div class="info-tile-title">Cryptographically random</div>
-            <div class="info-tile-body">Generated from 122 bits of secure random data — virtually impossible to predict.</div>
+            <h3 class="info-tile-title">Cryptographically random</h3>
+            <p class="info-tile-body">Generated from 122 bits of secure random data via the Web Crypto API — virtually impossible to predict or reverse-engineer.</p>
           </div>
           <div class="info-tile">
             <div class="info-tile-ico">🌍</div>
-            <div class="info-tile-title">Globally unique</div>
-            <div class="info-tile-body">Collision probability is roughly 1 in 5.3×10³⁶. For practical purposes, impossible.</div>
+            <h3 class="info-tile-title">Globally unique</h3>
+            <p class="info-tile-body">Collision probability is roughly 1 in 5.3×10³⁶. You could generate a billion UUIDs per second for 85 years before a 50% chance of collision.</p>
           </div>
           <div class="info-tile">
             <div class="info-tile-ico">📐</div>
-            <div class="info-tile-title">Standard format</div>
-            <div class="info-tile-body">32 hex digits in 8-4-4-4-12 groups. Defined by RFC 4122, universally supported.</div>
+            <h3 class="info-tile-title">Standard format (RFC 4122)</h3>
+            <p class="info-tile-body">32 hex digits in 8-4-4-4-12 groups. The RFC 4122 standard is universally supported across databases, languages and frameworks.</p>
           </div>
           <div class="info-tile">
             <div class="info-tile-ico">⚡</div>
-            <div class="info-tile-title">No server needed</div>
-            <div class="info-tile-body">Generated by the Web Crypto API, entirely in your browser. Nothing leaves your device.</div>
+            <h3 class="info-tile-title">Client-side — no server</h3>
+            <p class="info-tile-body">Generated entirely in your browser using <code>crypto.randomUUID()</code>. Nothing is transmitted to any server.</p>
           </div>
         </div>
 
         <div class="hr"></div>
 
-        <div style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:10px;font-weight:500">Anatomy of a UUID v4</div>
-        <div class="anatomy-box">
+        <h3 style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:10px;font-weight:500">Anatomy of a UUID v4</h3>
+        <div class="anatomy-box" aria-label="UUID v4 format: 8 random hex digits, dash, 4 random hex digits, dash, 4 followed by version digit 4 and 3 random hex digits, dash, variant bits followed by 3 random hex digits, dash, 12 random hex digits">
           <span class="sa">xxxxxxxx</span><span class="ds">-</span><span class="sb">xxxx</span><span class="ds">-</span><span class="sc">4xxx</span><span class="ds">-</span><span class="sd">yxxx</span><span class="ds">-</span><span class="se">xxxxxxxxxxxx</span>
         </div>
         <div class="seg-legend">
@@ -644,6 +788,45 @@
           <span><span class="dot" style="background:#818cf8"></span>version (4)</span>
           <span><span class="dot" style="background:#34d399"></span>variant</span>
           <span><span class="dot" style="background:#fb923c"></span>node</span>
+        </div>
+      </div>
+
+      <!-- ── FAQ ── -->
+      <div class="glass info-card" id="faq">
+        <h2 class="sec-label">Frequently Asked Questions</h2>
+
+        <div class="faq-list">
+
+          <details class="faq-item">
+            <summary class="faq-q">What is a UUID and what is it used for?</summary>
+            <p class="faq-a">A UUID (Universally Unique Identifier) is a 128-bit label used to uniquely identify information in computer systems. UUIDs are used as primary keys in databases, identifiers in REST APIs, session tokens, file names, and in distributed systems where multiple nodes need to generate IDs independently without coordination. They are defined by RFC 4122.</p>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-q">What is the difference between UUID v4 and other UUID versions?</summary>
+            <p class="faq-a">UUID v1 is time-based and encodes the MAC address of the generating machine — it's unique but not random, and can expose the machine identity. UUID v3 and v5 are name-based (generated deterministically from a namespace and a name). UUID v4 is the most widely used: it is entirely random (except for 6 fixed version and variant bits), making it the best choice when you need unpredictable, collision-resistant identifiers.</p>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-q">What is the difference between UUID and GUID?</summary>
+            <p class="faq-a">GUID (Globally Unique Identifier) is Microsoft's name for the same standard. Both follow RFC 4122 and use the same 128-bit format. GUID is the common term in Microsoft/.NET/SQL Server ecosystems, while UUID is the standard term everywhere else. They are interchangeable.</p>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-q">Are these UUIDs safe to use in production?</summary>
+            <p class="faq-a">Yes. This generator uses <code>crypto.randomUUID()</code>, which relies on the browser's Web Crypto API — the same cryptographic source used by operating systems and security-critical software. The generated UUIDs are fully RFC 4122 compliant and safe for use in production databases, APIs, and distributed systems.</p>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-q">Can two generated UUIDs ever be identical?</summary>
+            <p class="faq-a">In theory, yes — but the probability is negligible. The chance of generating two identical UUID v4s is approximately 1 in 5.3 × 10³⁶. Generating 1 billion UUIDs per second for 85 years would only give you a 50% chance of a single collision. For all practical purposes, each UUID generated here is unique.</p>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-q">How do I generate multiple UUIDs at once?</summary>
+            <p class="faq-a">Scroll to the Bulk UUID Generation section, enter any quantity between 1 and 500, and click Generate. You can then copy all UUIDs to your clipboard at once with Copy All, or download them as a plain text file (.txt) — one UUID per line.</p>
+          </details>
+
         </div>
       </div>
 
@@ -749,7 +932,7 @@ function setActive(el) {
   el.classList.add('active');
 }
 // Update active link on scroll
-const sections = ['generator','bulk','about'];
+const sections = ['generator','bulk','about','faq'];
 window.addEventListener('scroll', () => {
   let cur = sections[0];
   sections.forEach(id => {
